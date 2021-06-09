@@ -549,62 +549,72 @@ void drawDepthUI(){
 	text(depthString, width, height);
 }
 
-void drawTimerUI(){
-	String timeString = convertFramesToTimeString(gameTimer); // Requirement #4: Get the mm:ss string using String convertFramesToTimeString(int frames)   
-	textAlign(LEFT, BOTTOM);
+void drawTimerUI() {
+  float num = float(gameTimer)/60;
+  int min = int(num/60);
+  int sec = int(num - min*60);
+  String min_string = nf(min, 2);
+  String sec_string = nf(sec, 2);
+  String tempstring = min_string +":"+sec_string;
 
-	// Time Text Shadow Effect - You don't have to change this!
-	fill(0, 120);
-	text(timeString, 3, height + 3);
 
-	// Actual Time Text
-	color timeTextColor = getTimeTextColor(gameTimer); 		// Requirement #5: Get the correct color using color getTimeTextColor(int frames)
+  String timeString = tempstring; // Requirement #4: Get the mm:ss string using String convertFramesToTimeString(int frames)
+
+  textAlign(LEFT, BOTTOM);
+
+  // Time Text Shadow Effect - You don't have to change this!
+  fill(0, 120);
+  text(timeString, 3, height + 3);
+
+  // Actual Time Text
+
+  color timeTextColor = getTimeTextColor(gameTimer);     // Requirement #5: Get the correct color using color getTimeTextColor(int frames)
   fill(timeTextColor);
-	text(timeTextColor, 0, height);
+  text(timeString, 0, height);
 }
 
-void addTime(float seconds){					// Requirement #2
-  gameTimer += seconds;
+void addTime(float seconds) {          // Requirement #2
+  gameTimer = gameTimer + int(seconds);
 }
 
-boolean isHit(float ax, float ay, float aw, float ah, float bx, float by, float bw, float bh){
-  if(bx+bw>ax && bx<ax+aw && by+bh>ay && by<ay+ah){
+boolean isHit(float ax, float ay, float aw, float ah, float bx, float by, float bw, float bh) {
+
+  if (ax + aw > bx && ax < bx + bw && ay + ah > by && ay < by + bh) {//hit detect
     return true;
-  }else{
-	return false;								// Requirement #3
+  } else {
+    return false;                // Requirement #3
   }
 }
-/*
-      if(soldierX[i] + SOIL_SIZE > playerX    
-        && soldierX[i] < playerX + SOIL_SIZE    
-        && soldierY[i] + SOIL_SIZE > playerY    
-        && soldierY[i] < playerY + SOIL_SIZE)
-        
-*/
 
-String convertFramesToTimeString(int frames){	// Requirement #4
+String convertFramesToTimeString(int frames) {  // Requirement #4
+  return "";
+}
 
-    String minutes = nf(floor(frames/3600), 2);
-    String seconds = nf(floor(frames%3600/60), 2);
-    
-    return minutes+":"+seconds ;
+color getTimeTextColor(int frames) {        // Requirement #5
+  float num = float(frames)/60;
+  int min = int(num/60);
+  int sec = int(num - min*60);
+  color tempcolor;
+  if (min>=2) {
+    tempcolor = #00ffff;
+    return tempcolor;
+  } else if (min == 1) {
+    tempcolor = #ffffff;
+    return tempcolor;
+  } else if (min == 0 && sec >= 30 ) {
+    tempcolor = #ffcc00;
+    return tempcolor;
+  } else if (min == 0 && sec < 30 && sec >= 10) {
+    tempcolor = #ff6600;
+    return tempcolor;
+  } else if (min== 0 && sec < 10) {
+    tempcolor = #ff0000;
+    return tempcolor;
+  } else {
+    tempcolor = #00ffff;
+    return tempcolor;
   }
-
-color getTimeTextColor(int frames){				// Requirement #5
-    if(frames >= 2*60*60){
-      return #00ffff;
-    }else if(2*60*60 > frames && frames >= 60*60){
-      return #ffffff;
-    }else if(60*60 > frames && frames >=30){
-      return #ffcc00;
-    }else if(30*60 > frames && frames > 10*60){
-      return #ff6600;
-    }else{
-      return #ff0000;
-    }    
-  }
-
-
+}
 int getEnemyIndexByRow(int row){				// Requirement #6
 
 		// HINT:
